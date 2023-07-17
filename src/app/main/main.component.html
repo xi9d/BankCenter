@@ -1,0 +1,38 @@
+<div>
+  <h2>Welcome to Your Profile</h2>
+  <div *ngIf="haveData === 1">
+    <h3>Accounts</h3>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Account Name</th>
+        <th>Balance</th>
+      </tr>
+      <tr *ngFor="let account of data">
+        <td>{{ account.id }}</td>
+        <td>{{ account.accountName }}</td>
+        <td>{{ account.balance }}</td>
+      </tr>
+    </table>
+  </div>
+  <div *ngIf="haveData === 0">
+    <p>No accounts found.</p>
+  </div>
+
+  <h3>Create an Account</h3>
+  <div>
+    <input [(ngModel)]="accountName" type="text" placeholder="Account Name">
+    <button (click)="createAccount(accountName)">Create Account</button>
+  </div>
+
+  <h3>Perform a Transaction</h3>
+  <div>
+    <input [(ngModel)]="amount" type="number" placeholder="Amount">
+    <select [(ngModel)]="transactionType">
+      <option value="" disabled selected>Select Transaction Type</option>
+      <option value="deposit">Deposit</option>
+      <option value="withdraw">Withdraw</option>
+    </select>
+    <button (click)="performTransaction(account.id)">Perform Transaction</button>
+  </div>
+</div>
