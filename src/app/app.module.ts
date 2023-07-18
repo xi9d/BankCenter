@@ -3,44 +3,50 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {RouterModule, ROUTES} from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { LoginComponent } from './login/login.component';
 import { MainComponent } from './main/main.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    LoginComponent,
     SignupComponent,
-    MainComponent
+    LoginComponent,
+    MainComponent,
+
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
+    FormsModule,
     RouterModule.forRoot([
       {
-        path: '',
-        component: HomeComponent
+        path:'',
+        component:HomeComponent
       },
       {
-        path: 'login',
-        component: LoginComponent
+        path:'signup',
+        component:SignupComponent
       },
       {
-        path: 'signup',
-        component: SignupComponent
-      },{
         path:'main',
         component:MainComponent
+      },
+      {
+        path:'login',
+        component:LoginComponent
       }
     ])
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [SignupComponent,LoginComponent],
+  bootstrap: [AppComponent],
+
 })
 export class AppModule { }

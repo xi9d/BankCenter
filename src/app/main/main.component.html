@@ -1,38 +1,45 @@
+<div class="bg-orange-300 h-screen text-center">
+ <h1 class="text-center text-white font-bold bg-slate-800 text-2xl p-4">Bank Application</h1>
+<div *ngIf="customer">
+  <h2>Customer Details</h2>
+  <p><strong>First Name:</strong> {{ customer.firstName }}</p>
+  <p><strong>Last Name:</strong> {{ customer.lastName }}</p>
+  <p><strong>Email:</strong> {{ customer.email }}</p>
+</div>
+
+<div *ngIf="account" class="">
+  <h2>Account Details</h2>
+  <p><strong>Account Name:</strong> {{ account.accountName }}</p>
+  <p><strong>Account Balance:</strong> {{ account.balance }}</p>
+</div>
+
+
 <div>
-  <h2>Welcome to Your Profile</h2>
-  <div *ngIf="haveData === 1">
-    <h3>Accounts</h3>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Account Name</th>
-        <th>Balance</th>
-      </tr>
-      <tr *ngFor="let account of data">
-        <td>{{ account.id }}</td>
-        <td>{{ account.accountName }}</td>
-        <td>{{ account.balance }}</td>
-      </tr>
-    </table>
-  </div>
-  <div *ngIf="haveData === 0">
-    <p>No accounts found.</p>
-  </div>
+  <button (click)="createAccount()" class="p-3 border rounded-md text-white m-2">Create Account</button>
+  <button (click)="deposit()"  class="p-3 border-0 rounded-md text-white bg-orange-700 m-2">Deposit</button>
+  <button (click)="withdraw()" class="p-3 border-0 rounded-md text-white bg-green-600 m-2">Withdraw</button>
+</div>
 
-  <h3>Create an Account</h3>
-  <div>
-    <input [(ngModel)]="accountName" type="text" placeholder="Account Name">
-    <button (click)="createAccount(accountName)">Create Account</button>
-  </div>
+<div *ngIf="account" class="">
+  <label for="depositAmount">Deposit Amount:</label>
+  <input type="number" id="depositAmount" [(ngModel)]="depositAmount" class="border rounded-md ">
+  <button (click)="deposit()">Deposit</button>
+</div>
 
-  <h3>Perform a Transaction</h3>
-  <div>
-    <input [(ngModel)]="amount" type="number" placeholder="Amount">
-    <select [(ngModel)]="transactionType">
-      <option value="" disabled selected>Select Transaction Type</option>
-      <option value="deposit">Deposit</option>
-      <option value="withdraw">Withdraw</option>
-    </select>
-    <button (click)="performTransaction(account.id)">Perform Transaction</button>
+<div *ngIf="account">
+  <label for="withdrawAmount">Withdraw Amount:</label>
+  <input type="number" id="withdrawAmount" [(ngModel)]="withdrawAmount">
+  <button (click)="withdraw()">Withdraw</button>
+</div>
+
+  <div class="text-center">
+    <h2 class="text-slate-800 font-semibold">Transaction History</h2>
+    <ul *ngIf="transactions.length > 0">
+      <li *ngFor="let transaction of transactions">
+        <p><strong>Transaction ID:</strong> {{ transaction.id }}</p>
+        <p><strong>Amount:</strong> {{ transaction.amount }}</p>
+      </li>
+    </ul>
+    <p *ngIf="transactions.length === 0" class="text-red-600 border-2 p-3 w-full">No transactions found.</p>
   </div>
 </div>

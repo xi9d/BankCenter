@@ -1,117 +1,90 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerDetailsService } from '../services/customer-details.service';
-// @ts-ignore
-import { TransactionDetailsService } from '../services/transaction-details.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AccountDetails} from "../classes/account-details";
-import { Transaction} from "../classes/transaction-details";
+import { MainService } from '../Service/main.service';
+import { Account } from '../Model/account';
+import { Transaction } from '../Model/transaction';
+import {Customer} from "../Model/customer";
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
+  account: Account | null = null;
+  transactions: Transaction[] = [];
+  depositAmount: number = 0;
+  withdrawAmount: number = 0;
+  customer: Customer | null = null;
 
-  private haveData = 0;
-  private data: AccountDetails[] = [];
-  private dataRequest = false;
-  private accountName = '';
-  private amount = 0;
-  private transactionType = '';
+  constructor(private mainService: MainService) {}
 
-  constructor(
-    private customerDetailsService: CustomerDetailsService,
-    private transactionDetailsService: TransactionDetailsService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
-
-  ngOnInit() {
-    // Check if the user is logged in or redirect to login page
-    if (!this.customerDetailsService.isLoggedIn()) {
-      this.router.navigate(['/login']);
-    } else {
-      this.getAdminData();
+  ngOnInit(): void {
+    this.fetchCustomerDetails();
+  }
+  fetchCustomerDetails(): void {
+    const customerId = 1;// to check it its getting data from the database
+    this.mainService.getCustomerDetails(customerId).subscribe(
+      (customer: Customer) => {
+        this.customer = customer;
+      },
+      (error) => {
+        console.error('Error fetching customer details:', error);
+      }
+    );
+  }
+  createAccount(): void {
+    const accountName = window.prompt('Enter Account Name:');
+    if (accountName) {
+      this.mainService.createAccount(this.account?.customer.id|| 0, <Account>{ accountName: accountName }).subscribe(
+        (account: Account) => {
+          this.account = account;
+          this.fetchTransactions();
+        },
+        (error) => {
+          console.error('Error creating account:', error);
+        }
+      );
     }
   }
 
-  getAdminData() {
-    this.haveData = 0;
-    this.dataRequest = true;
-
-    // Call the getCustomerDetail method from the service
-    this.customerDetailsService.getCustomerDetail().subscribe(
-      (response: any) => {
-        this.data = response; // Assuming the API returns an array of AccountDetails
-        if (this.data.length > 0) {
-          this.haveData = 1;
-        }
-      },
-      (error) => {
-        console.log("Error while getting Admin Data");
-      }
-    );
-  }
-
-  createAccount(accountName: string) {
-    // Assuming the request body requires accountName
-    const request: AccountDetails = {
-      id: 0, // You may set it to 0 since the server will assign an ID
-      accountName: accountName,
-      balance: 0,
-      accountRefID: '',
-      customer: null,
-      transactions: []
-    };
-
-    this.customerDetailsService.registerCustomer(request).subscribe(
-      (response) => {
-        // Handle successful account creation, if needed
-        console.log("Account created:", response);
-        this.getAdminData(); // Update the data after creating an account
-        this.accountName = '';
-      },
-      (error) => {
-        console.log("Error while creating an account:", error);
-      }
-    );
-  }
-
-  performTransaction(accountId: number) {
-    const transaction: Transaction = new Transaction(0, this.amount); // Assuming the server assigns transaction ID
-
-    // Assuming the server requires accountId and transactionType for transactions
-    const request = {
-      accountId: accountId,
-      transaction: transaction,
-      transactionType: this.transactionType
-    };
-
-    // Assuming the API has an endpoint for transactions
-    if (this.transactionType === 'DEPOSIT') {
-      this.transactionDetailsService.depositAmount(request).subscribe(
-        (response) => {
-          console.log("Deposit successful:", response);
-          this.getAdminData(); // Update the data after performing a transaction
-          this.amount = 0;
-        },(error) => {
-          console.log("Error while performing a deposit:", error);
-        }
-      );
-    } else if (this.transactionType === 'WITHDRAW') {
-      this.transactionDetailsService.withdrawAmount(request).subscribe(
-        (response) => {
-          console.log("Withdraw successful:", response);
-          this.getAdminData(); // Update the data after performing a transaction
-          this.amount = 0;
+  fetchTransactions(): void {
+    if (this.account) {
+      this.mainService.getTransactions(this.account.customer.id, this.account.id).subscribe(
+        (transactions: Transaction[]) => {
+          this.transactions = transactions;
         },
         (error) => {
-          console.log("Error while performing a withdraw:", error);
+          console.error('Error fetching transactions:', error);
         }
       );
-    } else {
-      console.log("Invalid transaction type");
+    }
+  }
+
+  deposit(): void {
+    if (this.account) {
+      this.mainService.deposit(this.account.customer.id, this.account.id, this.depositAmount).subscribe(
+        (account: Account) => {
+          this.account = account;
+          this.fetchTransactions(); // Fetch transactions after depositing
+        },
+        (error) => {
+          console.error('Error depositing:', error);
+        }
+      );
+    }
+  }
+
+  withdraw(): void {
+    if (this.account) {
+      this.mainService.withdraw(this.account.customer.id, this.account.id, this.withdrawAmount).subscribe(
+        (account: Account) => {
+          this.account = account;
+          this.fetchTransactions(); // Fetch transactions after withdrawing
+        },
+        (error) => {
+          console.error('Error withdrawing:', error);
+        }
+      );
     }
   }
 }

@@ -1,7 +1,10 @@
+// login.component.ts
+
 import { Component } from '@angular/core';
-// @ts-ignore
-import { CustomerDetailsService } from '../services/customer-details.service';
-import { Customer } from '../classes/customer-details';
+import { Router } from '@angular/router'; // Import the Router
+import { LoginService } from '../Service/login.service';
+import { AuthenticationRequest } from '../Model/authentication-request';
+import { AuthenticationResponse } from '../Model/authentication-response';
 
 @Component({
   selector: 'app-login',
@@ -9,26 +12,25 @@ import { Customer } from '../classes/customer-details';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  constructor(private customerDetailsService: CustomerDetailsService) {}
+  email: string = '';
+  pin: string = '';
 
-  login(email: string, pin: string) {
-    // Create a registration request with the provided username and password
-    const request: Customer = {
-      email: email,
-      pin: pin
+  constructor(private loginService: LoginService, private router: Router) {}
+
+  onLogin(): void {
+    const request: AuthenticationRequest = {
+      email: this.email,
+      pin: this.pin
     };
 
-    // Call the authenticateCustomer function from the service
-    this.customerDetailsService.authenticateCustomer(request).subscribe(
-      (response) => {
-        // Handle successful login, e.g., store token in localStorage
-        console.log('Authentication successful:', response);
-        localStorage.setItem('token', response.token);
-        // Redirect to main component or any other desired page
+    this.loginService.login(request).subscribe(
+      (response: AuthenticationResponse) => {
+        console.log('Login successful:', response);
+        this.router.navigate(['/main']);
       },
       (error) => {
-        // Handle login error
-        console.error('Authentication Error:', error);
+        console.error('Error while logging in:', error);
+        this.router.navigate(['']);
       }
     );
   }

@@ -1,61 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CustomerDetails} from '../classes/customer-details';
-import { CustomerDetailsService } from '../services/customer-details.service';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router'; // Import the Router
+import { SignupServiceService } from '../Service/signup-service.service';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit {
-  constructor(private customerDetailsService: CustomerDetailsService, private router: Router) { }
+export class SignupComponent {
+  firstName: string = '';
+  lastName: string = '';
+  email: string = '';
+  pin: string = '';
 
-  form: FormGroup = new FormGroup({});
+  constructor(
+    private signupService: SignupServiceService,
+    private router: Router // Inject the Router
+  ) {}
 
-  ngOnInit() {
-    this.form = new FormGroup({
-      firstName: new FormControl('', Validators.required),
-      lastName: new FormControl('', Validators.required),
-      email: new FormControl('', Validators.required),
-      pin: new FormControl('', Validators.required),
-      confirm_pin: new FormControl('', Validators.required),
-    });
-  }
-
-  confirmForm() {
-    let pin = this.form.get('pin').value;
-    let confirmPin = this.form.get('confirm_pin').value;
-
-    if (pin === confirmPin) {
-      this.customerForm(); // Call customerForm if passwords match
-    } else {
-      alert("Password and confirm password do not match.");
-    }
-  }
-
-  customerForm() {
-    const request: CustomerDetails = {
-      firstName: this.form.get('firstName').value,
-      lastName: this.form.get('lastName').value,
-      email: this.form.get('email').value,
-      pin: this.form.get('pin').value
-    };
-
-    this.customerDetailsService.registerCustomer(request).subscribe(
-      response => {
-        let result = response.json();
-
-        if (result > 0) {
-          this.router.navigate(['/login']);
-        } else {
-          alert("Error occurred while registering User. Please try again later.");
+  onSignup(): void {
+    this.signupService.signup(this.firstName, this.lastName, this.email, this.pin)
+      .subscribe(
+        (response) => {
+          console.log('Signup successful:', response);
+          this.router.navigate(['/login']); // Navigate to the login page
+        },
+        (error) => {
+          console.error('Error while signing up:', error);
         }
-      },
-      error => {
-        alert("Error occurred while registering User. Please try again later.");
-      }
-    );
+      );
   }
 }

@@ -1,31 +1,17 @@
-<div class="signup-container">
-  <h2>Create an Account</h2>
-  <form [formGroup]="form" (ngSubmit)="customerForm()">
-    <div class="form-group">
-      <label for="firstName">First Name</label>
-      <input type="text" id="firstName" formControlName="firstName" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="lastName">Last Name</label>
-      <input type="text" id="lastName" formControlName="lastName" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" formControlName="email" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="pin">Password</label>
-      <input type="password" id="pin" formControlName="pin" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-      <label for="confirm_pin">Confirm Password</label>
-      <input type="password" id="confirm_pin" formControlName="confirm_pin" class="form-control" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Register</button>
+<div class="bg-orange-300 h-screen">
+  <h1 class="bg-slate-700 text-white p-4 font-semibold text-center">Bank Application</h1>
+<div class="border p-5 border-white max-w-2xl mx-auto my-10 text-center">
+  <h1 class="text-slate-600 font-bold m-3 text-2xl underline">Sign Up</h1>
+  <form class="" (ngSubmit)="onSignup()">
+    <label for="firstName" class="text-slate-500 text-xl font-semibold">First Name</label><br>
+    <input type="text" id="firstName" [(ngModel)]="firstName" name="firstName" class="p-2 border border-slate-500 font-semibold" /><br>
+    <label for="lastName" class="text-slate-500 text-xl font-semibold">Last Name</label><br>
+    <input type="text" id="lastName" [(ngModel)]="lastName" name="lastName" class="p-2 border border-slate-500 font-semibold" /><br>
+    <label for="email" class="text-slate-500 text-xl font-semibold">Email</label><br>
+    <input type="text" id="email" [(ngModel)]="email" name="email" class="p-2 border border-slate-500 font-semibold" /><br>
+    <label for="pin" class="text-slate-500 text-xl font-semibold">Pin</label><br>
+    <input type="password" id="pin" [(ngModel)]="pin" name="pin" class="p-2 border border-slate-500 font-semibold" /><br>
+    <button type="submit" class="bg-orange-700 text-white font-bold p-4 m-2 rounded-md">Submit</button>
   </form>
+</div>
 </div>

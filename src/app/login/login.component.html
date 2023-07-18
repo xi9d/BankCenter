@@ -1,14 +1,14 @@
-<div class="login-container">
-  <h2>Login</h2>
-  <form (ngSubmit)="login(email.value, pin.value)">
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" #email id="email" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="pin">PIN</label>
-      <input type="password" #pin id="pin" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+
+<div class="bg-orange-300 h-screen">
+  <h1 class="bg-slate-700 text-white p-4 font-semibold text-center">Bank Application</h1>
+<div class="max-w-2xl mx-auto border p-5 border-white my-10 text-center">
+  <h1 class="text-slate-600 font-bold m-3 text-2xl underline">Login</h1>
+  <form class="" (ngSubmit)="onLogin()">
+    <label for="email" class="text-slate-500 text-xl font-semibold">Email</label><br>
+    <input type="text" id="email" [(ngModel)]="email" name="email" class=" ml-5 p-2 border border-slate-500 font-semibold" /><br>
+    <label for="pin" class="text-slate-500 text-xl font-semibold">Pin</label><br>
+    <input type="password" id="pin" [(ngModel)]="pin" name="pin" class="ml-5 p-2 border border-slate-500 font-semibold" /><br>
+    <button type="submit" class="bg-orange-700 text-white font-bold p-4 m-2 rounded-md">Submit</button>
   </form>
+</div>
 </div>
